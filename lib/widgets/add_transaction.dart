@@ -51,59 +51,65 @@ class _AddTransactionState extends State<AddTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        elevation: 10,
-        child: Container(
-          padding: EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              TextField(
-                decoration: InputDecoration(labelText: "title"),
-                controller: _titleInputController,
-                onSubmitted: (_) {
-                  _onSubmitData();
-                },
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: "amount"),
-                controller: _amountInputController,
-                keyboardType: TextInputType.number,
-                onSubmitted: (_) {
-                  _onSubmitData();
-                },
-              ),
-              Container(
-                height: 70,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Text(_transactionDate != null
-                          ? DateFormat.yMd().format(_transactionDate)
-                          : "No date chosen "),
-                    ),
-                    FlatButton(
-                      child: Text(
-                        "choose date",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor),
-                      ),
-                      onPressed: _chooseDate,
-                    )
-                  ],
+    return SingleChildScrollView(
+      child: Card(
+          elevation: 10,
+          child: Container(
+            padding: EdgeInsets.only(
+                left: 10,
+                top: 10,
+                right: 10,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                TextField(
+                  decoration: InputDecoration(labelText: "title"),
+                  controller: _titleInputController,
+                  onSubmitted: (_) {
+                    _onSubmitData();
+                  },
                 ),
-              ),
-              RaisedButton(
-                  child: Text(
-                    "add transaction",
-                    style: TextStyle(color: Colors.white),
+                TextField(
+                  decoration: InputDecoration(labelText: "amount"),
+                  controller: _amountInputController,
+                  keyboardType: TextInputType.number,
+                  onSubmitted: (_) {
+                    _onSubmitData();
+                  },
+                ),
+                Container(
+                  height: 70,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(_transactionDate != null
+                            ? DateFormat.yMd().format(_transactionDate)
+                            : "No date chosen "),
+                      ),
+                      FlatButton(
+                        child: Text(
+                          "choose date",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor),
+                        ),
+                        onPressed: _chooseDate,
+                      )
+                    ],
                   ),
-                  color: Theme.of(context).primaryColor,
-                  onPressed: _onSubmitData)
-            ],
-          ),
-        ));
+                ),
+                RaisedButton(
+                    child: Text(
+                      "add transaction",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    color: Theme.of(context).primaryColor,
+                    onPressed: _onSubmitData)
+              ],
+            ),
+          )),
+    );
   }
 }
