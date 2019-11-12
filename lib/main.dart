@@ -44,13 +44,24 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
+  double _getDeviceHeight({
+    @required BuildContext context,
+    @required PreferredSizeWidget appBar,
+  }) {
+    double height = MediaQuery.of(context).size.height -
+        MediaQuery.of(context).padding.top -
+        appBar.preferredSize.height;
+
+    return height;
+  }
+
   List<Transaction> _transactions = [];
 
   void addTransaction(
       {@required String title,
       @required double amount,
       @required DateTime transactionDate}) {
-    var newTransction = Transaction(
+    Transaction newTransction = Transaction(
       title: title,
       amount: amount,
       id: DateTime.now().toString(),
@@ -83,32 +94,53 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
+  Widget appBar(
+      {@required BuildContext context,
+      @required Function startNewTransaction}) {
+    return AppBar(
+      title: Text("Personal Expenses"),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () {
+            startNewTransaction(context);
+          },
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Personal Expenses"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              startNewTransaction(context);
-            },
-          ),
-        ],
-      ),
+      appBar:
+          appBar(context: context, startNewTransaction: startNewTransaction),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             Container(
+              height: _getDeviceHeight(
+                      context: context,
+                      appBar: appBar(
+                          context: context,
+                          startNewTransaction: startNewTransaction)) *
+                  .3,
               width: double.infinity,
               child: Chart(recentTransactions: _recentTransactions),
             ),
             // UserTransactions()
 
-            TransactionsList(
-              transactions: _transactions,
-              deleteTransaction: _deleteTransaction,
+            Container(
+              height: _getDeviceHeight(
+                      context: context,
+                      appBar: appBar(
+                          context: context,
+                          startNewTransaction: startNewTransaction)) *
+                  .7,
+              child: TransactionsList(
+                transactions: _transactions,
+                deleteTransaction: _deleteTransaction,
+              ),
             )
           ],
         ),
