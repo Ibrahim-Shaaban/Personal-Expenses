@@ -37,6 +37,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _showChart = false;
   List<Transaction> get _recentTransactions {
     return _transactions.where((transaction) {
       return transaction.date
@@ -112,36 +113,76 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget _chartWidget(heightRatio) {
+      return Container(
+        height: _getDeviceHeight(
+                context: context,
+                appBar: appBar(
+                    context: context,
+                    startNewTransaction: startNewTransaction)) *
+            heightRatio,
+        width: double.infinity,
+        child: Chart(recentTransactions: _recentTransactions),
+      );
+    }
+
+    Widget _transactionsListwidget(heightRatio) {
+      return Container(
+        height: _getDeviceHeight(
+                context: context,
+                appBar: appBar(
+                    context: context,
+                    startNewTransaction: startNewTransaction)) *
+            heightRatio,
+        child: TransactionsList(
+          transactions: _transactions,
+          deleteTransaction: _deleteTransaction,
+        ),
+      );
+    }
+
+    Widget _switchWidget = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          "show chart",
+          style: TextStyle(fontSize: 17),
+        ),
+        Switch(
+          value: _showChart,
+          onChanged: (val) {
+            setState(() {
+              _showChart = val;
+            });
+          },
+        )
+      ],
+    );
+
+    List<Widget> _handleView() {
+      var isLandscape =
+          MediaQuery.of(context).orientation == Orientation.landscape;
+      if (isLandscape) {
+        return [
+          _switchWidget,
+          _showChart ? _chartWidget(.6) : _transactionsListwidget(.7)
+        ];
+      }
+      return [
+        _chartWidget(.3),
+        _transactionsListwidget(.7),
+      ];
+    }
+
     return Scaffold(
       appBar:
           appBar(context: context, startNewTransaction: startNewTransaction),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Container(
-              height: _getDeviceHeight(
-                      context: context,
-                      appBar: appBar(
-                          context: context,
-                          startNewTransaction: startNewTransaction)) *
-                  .3,
-              width: double.infinity,
-              child: Chart(recentTransactions: _recentTransactions),
-            ),
-            // UserTransactions()
-
-            Container(
-              height: _getDeviceHeight(
-                      context: context,
-                      appBar: appBar(
-                          context: context,
-                          startNewTransaction: startNewTransaction)) *
-                  .7,
-              child: TransactionsList(
-                transactions: _transactions,
-                deleteTransaction: _deleteTransaction,
-              ),
-            )
+            // _switchWidget,
+            // _showChart ? _transactionsListwidget(.7) : _chartWidget(.6),
+            ..._handleView()
           ],
         ),
       ),
